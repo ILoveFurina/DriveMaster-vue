@@ -2,7 +2,9 @@
 <template>
   <div class="footer-info">
     郑州轻工业大学 闫其武 独立开发 基于Vue3+SpringBoot3
+    <router-link to="/projectInfo">关于这个项目</router-link>
   </div>
+
 </template>
 
 <script>

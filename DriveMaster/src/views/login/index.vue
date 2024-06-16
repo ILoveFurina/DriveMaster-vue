@@ -2,12 +2,13 @@
 
   <div class="all">
     <div class="title">
-      <h1> 个人记账管理系统 </h1>
+      <h1> DriveMaster驾校管理系统 </h1>
     </div>
+
+
 
     <div class="container" >
       <!-- 您的内容 -->
-
       <a-card id="mainCard" >
         <h3 style="height: 50px;">
           登录
@@ -46,7 +47,7 @@
             <a-form-item name="remember" no-style>
               <a-checkbox v-model:checked="formState.remember">记住密码</a-checkbox>
             </a-form-item>
-            <a class="login-form-forgot" href="">&nbsp; &nbsp; 找回密码</a>
+            <router-link to="/recall"> 找回密码 </router-link>
           </a-form-item>
 
           <a-form-item>
@@ -54,7 +55,7 @@
               登录
             </a-button>
             &nbsp; &nbsp; &nbsp;
-            <a href="">还没有注册？点击这里</a>
+            <router-link to="/register">还没有注册？点击这里</router-link>
           </a-form-item>
         </a-form>
       </a-card>
@@ -66,6 +67,8 @@
 import { reactive, computed } from 'vue';
 import {useUserInfoStore} from "@/stores/userInfoStore.js";
 import {useRouter} from "vue-router";
+import ProjectInfo from "@/components/ProjectInfo.vue";
+
 
 let router = useRouter();
 
@@ -97,7 +100,7 @@ const validateUsername = async (_rule, value) => {
   if(value === '' ){
     return Promise.reject("用户名不能为空");
   }else {
-    let reg = /^[a-zA-Z0-9]{5,12}$/
+    let reg = /^[a-zA-Z0-9]{5,16}$/
     if(!reg.test(value)){
       return Promise.reject("用户名格式错误");
     }
@@ -109,7 +112,7 @@ const validatePassword = async (_rule, value) => {
   if(value === '' ){
     return Promise.reject("密码不能为空");
   }else {
-    let reg = /^[a-zA-Z0-9]{6,12}$/
+    let reg = /^[a-zA-Z0-9]{6,16}$/
     if(!reg.test(value)){
       return Promise.reject("密码格式错误");
     }
@@ -134,7 +137,7 @@ import {
 } from '@ant-design/icons-vue';
 import {login} from "@/api/login/login.js";
 import {checkLogin} from "@/api/login/checkLogin.js";
-import AuthorState from "./components/authorState.vue";
+import authorState from "@/components/authorState.vue";
 
 </script>
 <style scoped>

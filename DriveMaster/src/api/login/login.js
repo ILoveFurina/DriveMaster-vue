@@ -3,11 +3,9 @@ import AxiosInstance from "@/utils/http.js";
 
 function login(username,password){
 
-     AxiosInstance.get("/admin/login",{
-        params:{
-            username,
-            password
-        },
+     AxiosInstance.post("/admin/user/login",{
+        username,
+         password
     }).then((response) => {
 
         console.log(response)
