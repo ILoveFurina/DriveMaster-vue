@@ -4,9 +4,6 @@
     <div class="title">
       <h1> DriveMaster驾校管理系统 </h1>
     </div>
-
-
-
     <div class="container" >
       <!-- 您的内容 -->
       <a-card id="mainCard" >
@@ -67,8 +64,6 @@
 import { reactive, computed } from 'vue';
 import {useUserInfoStore} from "@/stores/userInfoStore.js";
 import {useRouter} from "vue-router";
-import ProjectInfo from "@/components/ProjectInfo.vue";
-
 
 let router = useRouter();
 
@@ -78,16 +73,24 @@ const formState = reactive({
   password: '',
   remember: true,
 });
-const onFinish = values => {
+
+const onFinish = async values => {
   console.log('Success:', values);
   userInfoStore.setUsername(values.username);
   userInfoStore.setPassword(values.password);
   userInfoStore.setRememberState(values.remember);
-  if(login(userInfoStore.getUsername(),userInfoStore.getPassword())){
-    router.push("/aside")
+
+  try {
+    const loginSuccess = await login(userInfoStore.getUsername(), userInfoStore.getPassword());
+    if (loginSuccess) {
+      await router.push("/");
+    } else {
+      console.error("Login failed");
+      message.error("登录状态失效，请重新登陆",3)
+    }
+  } catch (error) {
+    console.error("Error during login:", error);
   }
-
-
 };
 const onFinishFailed = errorInfo => {
   console.log('Failed:', errorInfo);
@@ -138,6 +141,7 @@ import {
 import {login} from "@/api/login/login.js";
 import {checkLogin} from "@/api/login/checkLogin.js";
 import authorState from "@/components/authorState.vue";
+import {message} from "ant-design-vue";
 
 </script>
 <style scoped>

@@ -5,6 +5,7 @@ export const useUserInfoStore = defineStore('userInfo',()=>{
     let username = ref('');
     let password = ref('');
     let remember = ref(true);
+    let token = ref('');
 
     let getUsername = () => username.value;
 

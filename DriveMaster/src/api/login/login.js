@@ -1,26 +1,24 @@
 import axios from "axios"
 import AxiosInstance from "@/utils/http.js";
+import {message} from "ant-design-vue";
 
-function login(username,password){
-
-     AxiosInstance.post("/admin/user/login",{
-        username,
-         password
-    }).then((response) => {
+export async function login(username, password) {
+    try {
+        const response = await AxiosInstance.post("admin/user/login", {
+            username,
+            password
+        })
 
         console.log(response)
-        if(response.status === 200){
-            return 1;
-        }else {
-            return 0;
+        if (response.code === 200) {
+            message.success(response.msg, 3);
+            return true
         }
-
-    }).catch((error)=>{
-        console.log(error);
-        return 0;
-    })
-
-    return 0;
+        if (response.code === 500) {
+            message.error(response.msg, 3);
+            return false
+        }
+    } catch (error) {
+        console.log(error)
+    }
 }
-
-export {login}

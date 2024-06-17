@@ -28,6 +28,9 @@
           <a-form-item has-feedback label="账号" name="username">
             <a-input v-model:value="formState.username"  autocomplete="off" style="margin-left: 30px"/>
           </a-form-item>
+          <a-form-item has-feedback label="手机号" name="phone">
+            <a-input v-model:value="formState.phone"  autocomplete="off" style="margin-left: 30px"/>
+          </a-form-item>
           <a-form-item has-feedback label="密码" name="pass">
             <a-input v-model:value="formState.pass" type="password" autocomplete="off" style="margin-left: 30px"/>
           </a-form-item>
@@ -52,6 +55,7 @@ import {
   CheckOutlined, LeftOutlined,
 } from '@ant-design/icons-vue';
 import {useRouter} from "vue-router";
+import {register} from "@/api/register/register.js";
 
 const router = useRouter();
 const formRef = ref();
@@ -60,6 +64,7 @@ const formState = reactive({
   username:'',
   pass: '',
   checkPass: '',
+  phone: '',
 });
 const validateName = async (_rule, value) =>{
   if (value === '') {
@@ -125,7 +130,18 @@ const rules = {
       validator: validateUsername,
       trigger: 'change',
     }
-  ]
+  ],
+  phone: [
+    {
+      message: '请输入手机号',
+      trigger: 'change',
+    },
+    {
+      pattern: /^1[3456789]\d{9}$/,
+      message: '请输入正确的手机号',
+      trigger: 'change',
+    },
+  ],
 };
 const layout = {
   labelCol: {
@@ -135,8 +151,20 @@ const layout = {
     span: 14,
   },
 };
+const LoginDTO = {
+  name: '',
+  username: '',
+  password: '',
+  phone: '',
+}
+
 const handleFinish = values => {
   console.log(values, formState);
+  LoginDTO.name = formState.name;
+  LoginDTO.username = formState.username;
+  LoginDTO.password = formState.pass;
+  LoginDTO.phone = formState.phone;
+  register(LoginDTO)
 };
 const handleFinishFailed = errors => {
   console.log(errors);
