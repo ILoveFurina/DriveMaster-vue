@@ -86,7 +86,6 @@ const onFinish = async values => {
       await router.push("/");
     } else {
       console.error("Login failed");
-      message.error("登录状态失效，请重新登陆",3)
     }
   } catch (error) {
     console.error("Error during login:", error);

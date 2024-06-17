@@ -5,7 +5,7 @@ import Layout from '@/views/Layout/index.vue'
 import Register from "@/views/Register/register.vue";
 import Recall from '@/views/RecallPassword/index.vue'
 import ProjectInfo from "@/components/ProjectInfo.vue";
-
+import UserProfile from "@/views/UserProfile/index.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,13 +28,55 @@ const router = createRouter({
     },
     {
       path: '/',
-      component: Layout
+      component: Layout,
+      children: [
+        {
+          path: "/info",
+          component: Info,
+          children:[
+            {
+              path: "",
+              component: Coach
+            },
+            {
+              path: "/info/coach",
+              component: Coach
+            },
+            {
+              path: "/info/student",
+              component: Student
+            },
+            {
+              path: "/info/graduation",
+              component: Graduation
+            },
+            {
+              path: "/info/bill",
+              component: Bill
+            },
+            {
+              path: "/info/train",
+              component: Train
+            }
+          ]
+        },
+        {
+          path: "/userProfile",
+          component: UserProfile
+        }
+      ]
     },
   ]
 })
 
 import {checkLogin} from "@/api/login/checkLogin.js";
 import {message} from "ant-design-vue";
+import Coach from "@/views/Layout/components/components/coach.vue";
+import Student from "@/views/Layout/components/components/student.vue";
+import Graduation from "@/views/Layout/components/components/graduation.vue";
+import Bill from "@/views/Layout/components/components/bill.vue";
+import Train from "@/views/Layout/components/components/train.vue";
+import Info from "@/views/Layout/components/Info.vue";
 router.beforeEach(async (to, from, next) => {
   // 如果是访问登录页面，直接放行
   if (to.path === '/login') {

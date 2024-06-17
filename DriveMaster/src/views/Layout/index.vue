@@ -1,83 +1,64 @@
 <template>
   <a-layout style="min-height: 100vh">
-    <a-layout-sider v-model:collapsed="collapsed" collapsible>
+    <a-layout-header class="header">
       <div class="logo" />
-      <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
-        <a-menu-item key="1">
-          <pie-chart-outlined />
-          <span>Option 1</span>
-        </a-menu-item>
-        <a-menu-item key="2">
-          <desktop-outlined />
-          <span>Option 2</span>
-        </a-menu-item>
-        <a-sub-menu key="sub1">
-          <template #title>
-            <span>
-              <user-outlined />
-              <span>User</span>
-            </span>
-          </template>
-          <a-menu-item key="3">Tom</a-menu-item>
-          <a-menu-item key="4">Bill</a-menu-item>
-          <a-menu-item key="5">Alex</a-menu-item>
-        </a-sub-menu>
-        <a-sub-menu key="sub2">
-          <template #title>
-            <span>
-              <team-outlined />
-              <span>Team</span>
-            </span>
-          </template>
-          <a-menu-item key="6">Team 1</a-menu-item>
-          <a-menu-item key="8">Team 2</a-menu-item>
-        </a-sub-menu>
-        <a-menu-item key="9">
-          <file-outlined />
-          <span>File</span>
-        </a-menu-item>
+      <a-menu
+          v-model:selectedKeys="selectedKeys1"
+          theme="dark"
+          mode="horizontal"
+          :style="{ lineHeight: '64px' }"
+      >
+        <a-menu-item key="1" @click="router.push('/info')">信息管理</a-menu-item>
+        <a-menu-item key="2" @click="router.push('/userProfile')">个人中心</a-menu-item>
+        <a-menu-item key="3">nav 3</a-menu-item>
       </a-menu>
-    </a-layout-sider>
-    <a-layout>
-      <a-layout-header style="background: #fff; padding: 0" />
-      <a-layout-content style="margin: 0 16px">
-        <a-breadcrumb style="margin: 16px 0">
-          <a-breadcrumb-item>User</a-breadcrumb-item>
-          <a-breadcrumb-item>Bill</a-breadcrumb-item>
-        </a-breadcrumb>
-        <div :style="{ padding: '24px', background: '#fff', minHeight: '360px' }">
-          Bill is a cat.
-        </div>
-      </a-layout-content>
-      <a-layout-footer style="text-align: center">
-        Ant Design ©2018 Created by Ant UED
-      </a-layout-footer>
-    </a-layout>
+    </a-layout-header>
+    <a-layout-content style="padding: 0 50px; display: flex; flex-direction: column; flex: 1;">
+      <a-breadcrumb style="margin: 16px 0">
+        <a-breadcrumb-item>Home</a-breadcrumb-item>
+        <a-breadcrumb-item>List</a-breadcrumb-item>
+        <a-breadcrumb-item>App</a-breadcrumb-item>
+      </a-breadcrumb>
+      <a-layout style="padding: 24px 0; background: #fff; flex: 1;">
+        <router-view/>
+      </a-layout>
+    </a-layout-content>
+    <a-layout-footer style="text-align: center">
+      Ant Design ©2018 Created by Ant UED
+    </a-layout-footer>
   </a-layout>
 </template>
-<script lang="ts" setup>
-import {
-  PieChartOutlined,
-  DesktopOutlined,
-  UserOutlined,
-  TeamOutlined,
-  FileOutlined,
-} from '@ant-design/icons-vue';
+
+<script setup>
 import { ref } from 'vue';
-const collapsed = ref<boolean>(false);
-const selectedKeys = ref<string[]>(['1']);
+import { useRouter } from 'vue-router';
+
+const selectedKeys1 = ref(['2']);
+const selectedKeys2 = ref(['1']);
+const router = useRouter();
 </script>
+
 <style scoped>
-#components-layout-demo-side .logo {
-  height: 32px;
-  margin: 16px;
+html, body, #app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#components-layout-demo-top-side .logo {
+  float: left;
+  width: 120px;
+  height: 31px;
+  margin: 16px 24px 16px 0;
   background: rgba(255, 255, 255, 0.3);
 }
 
-.site-layout .site-layout-background {
-  background: #fff;
+.ant-row-rtl #components-layout-demo-top-side .logo {
+  float: right;
+  margin: 16px 0 16px 24px;
 }
-[data-theme='dark'] .site-layout .site-layout-background {
-  background: #141414;
+
+.site-layout-background {
+  background: #fff;
 }
 </style>
