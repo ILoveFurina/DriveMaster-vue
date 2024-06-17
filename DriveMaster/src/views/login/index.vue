@@ -19,7 +19,7 @@
             :rules="rules"
         >
           <a-form-item
-              label="用户名"
+              label="账号"
               name="username"
           >
             <a-input v-model:value="formState.username">

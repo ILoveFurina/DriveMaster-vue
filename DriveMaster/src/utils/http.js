@@ -3,7 +3,7 @@ import { message } from 'ant-design-vue';
 import axios from "axios";
 
 const httpInstance = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: '/api',
     timeout: 1000,
     withCredentials: true
 });
@@ -12,7 +12,7 @@ const httpInstance = axios.create({
 httpInstance.interceptors.request.use(config =>{
     return config
 }, error => {
-    // 对请求错误做些什么;b,mv/hlo
+    // 对请求错误做些什么;
     console.log("请求错误",error)
     return Promise.reject(error);
 });
