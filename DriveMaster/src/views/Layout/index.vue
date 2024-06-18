@@ -15,9 +15,7 @@
     </a-layout-header>
     <a-layout-content style="padding: 0 50px; display: flex; flex-direction: column; flex: 1;">
       <a-breadcrumb style="margin: 16px 0">
-        <a-breadcrumb-item>Home</a-breadcrumb-item>
-        <a-breadcrumb-item>List</a-breadcrumb-item>
-        <a-breadcrumb-item>App</a-breadcrumb-item>
+        <a-breadcrumb-item>在记录添加与更新中，请输入正确的格式，不然可能会导致错误</a-breadcrumb-item>
       </a-breadcrumb>
       <a-layout style="padding: 24px 0; background: #fff; flex: 1;">
         <router-view/>
@@ -33,7 +31,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-const selectedKeys1 = ref(['2']);
+const selectedKeys1 = ref(['1']);
 const selectedKeys2 = ref(['1']);
 const router = useRouter();
 </script>

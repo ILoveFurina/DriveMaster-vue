@@ -25,5 +25,6 @@ const handlePageChange = (page) => {
 .page {
   padding: 24px;
   text-align: center;
+  z-index: 10;
 }
 </style>

@@ -34,12 +34,10 @@
           overflow: 'hidden'
         }"
       >
-        <div style="flex: 1; overflow: hidden;"> <!-- Changed overflow to hidden -->
+        <div style="flex: 1; overflow: auto;"> <!-- Changed overflow to hidden -->
           <router-view/>
         </div>
-        <div class="page">
-          <Page/>
-        </div>
+
       </a-layout-content>
     </a-layout>
   </a-layout>
