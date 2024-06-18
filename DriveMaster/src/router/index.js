@@ -6,6 +6,7 @@ import Register from "@/views/Register/register.vue";
 import Recall from '@/views/RecallPassword/index.vue'
 import ProjectInfo from "@/components/ProjectInfo.vue";
 import UserProfile from "@/views/UserProfile/index.vue"
+import MessageBoard from "@/views/MessageBoard/index.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,7 +32,7 @@ const router = createRouter({
       component: Layout,
       children: [
         {
-          path: "/info",
+          path: "",
           component: Info,
           children:[
             {
@@ -63,6 +64,10 @@ const router = createRouter({
         {
           path: "/userProfile",
           component: UserProfile
+        },
+        {
+          path: "/messageBoard",
+          component: MessageBoard
         }
       ]
     },

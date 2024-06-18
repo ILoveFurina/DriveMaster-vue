@@ -76,14 +76,15 @@ const formState = reactive({
 
 const onFinish = async values => {
   console.log('Success:', values);
-  userInfoStore.setUsername(values.username);
-  userInfoStore.setPassword(values.password);
-  userInfoStore.setRememberState(values.remember);
 
   try {
-    const loginSuccess = await login(userInfoStore.getUsername(), userInfoStore.getPassword());
+    const loginSuccess = await login(values.username, values.password);
     if (loginSuccess) {
-      await router.push("/");
+      const response = await getUser(values.username);
+      localStorage.setItem("user",response.data.user);
+      router.push("/").catch(error => {
+        console.error("Router push failed:", error);
+      });
     } else {
       console.error("Login failed");
     }
@@ -141,6 +142,7 @@ import {login} from "@/api/login/login.js";
 import {checkLogin} from "@/api/login/checkLogin.js";
 import authorState from "@/components/authorState.vue";
 import {message} from "ant-design-vue";
+import {getUser} from "@/api/login/getUser.js";
 
 </script>
 <style scoped>

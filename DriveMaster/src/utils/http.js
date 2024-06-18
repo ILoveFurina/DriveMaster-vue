@@ -4,7 +4,7 @@ import axios from "axios";
 
 const httpInstance = axios.create({
     baseURL: '/api',
-    timeout: 1000,
+    timeout: 2000,
     withCredentials: true
 });
 
@@ -14,6 +14,7 @@ httpInstance.interceptors.request.use(config =>{
 }, error => {
     // 对请求错误做些什么;
     console.log("请求错误",error)
+    message.error("请求服务器数据错误："+error.message)
     return Promise.reject(error);
 });
 

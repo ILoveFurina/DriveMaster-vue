@@ -8,9 +8,9 @@
           mode="horizontal"
           :style="{ lineHeight: '64px' }"
       >
-        <a-menu-item key="1" @click="router.push('/info')">信息管理</a-menu-item>
+        <a-menu-item key="1" @click="router.push('/')">信息管理</a-menu-item>
         <a-menu-item key="2" @click="router.push('/userProfile')">个人中心</a-menu-item>
-        <a-menu-item key="3">nav 3</a-menu-item>
+        <a-menu-item key="3" @click="router.push('/messageBoard')">留言板</a-menu-item>
       </a-menu>
     </a-layout-header>
     <a-layout-content style="padding: 0 50px; display: flex; flex-direction: column; flex: 1;">
