@@ -1,5 +1,5 @@
 <template>
-  这里是二级路由个人中心
+  你的用户名是 :{{ user }}
 </template>
 
 
@@ -10,7 +10,7 @@ import {useRouter} from "vue-router";
 const selectedKeys1 = ref(['2']);
 const selectedKeys2 = ref(['1']);
 const router = useRouter();
-
+const user = localStorage.getItem("user");
 
 </script>
 

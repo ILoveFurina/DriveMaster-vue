@@ -2,7 +2,7 @@ import axios from "axios"
 import AxiosInstance from "@/utils/http.js";
 import {message} from "ant-design-vue";
 
-export async function commentPageQuery({page=1,pageSize=10}) {
+export async function commentPageQuery(commentPageQueryDTO) {
     try {
         const response = await AxiosInstance.get("admin/comment/page",{
             params: commentPageQueryDTO

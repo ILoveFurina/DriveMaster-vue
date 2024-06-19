@@ -2,9 +2,9 @@
 import AxiosInstance from "@/utils/http.js";
 import {message} from "ant-design-vue";
 
-export async function addMessageAPI(messageDTO) {
+export async function addMessageAPI(commentDTO) {
     try {
-        const response = await AxiosInstance.post("admin/coach",messageDTO)
+        const response = await AxiosInstance.post("admin/comment",commentDTO)
         console.log(response)
 
         if (response.code === 200) {
@@ -13,9 +13,8 @@ export async function addMessageAPI(messageDTO) {
         else {
             message.error("添加失败")
         }
-
+        return response
     } catch (error) {
-        message.error("添加失败")
         console.log(error)
     }
 }

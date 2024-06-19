@@ -3,9 +3,6 @@
     <a-card title="留言板" bordered>
       <a-form @submit.prevent="addMessage">
         <a-form-item>
-          <a-input v-model:value="username" placeholder="用户名" />
-        </a-form-item>
-        <a-form-item>
           <a-textarea v-model:value="content" placeholder="留言内容" />
         </a-form-item>
         <a-form-item>
@@ -16,55 +13,62 @@
     <a-list v-if="messages.length" :data-source="messages" style="margin-top: 24px;">
       <template #renderItem="{ item }">
         <a-list-item>
-          <a-list-item-meta :title="item.username" :description="item.content" />
+          <a-list-item-meta :title="item.user" :description="item.comment" />
         </a-list-item>
       </template>
     </a-list>
-    <a-pagination v-model:current="current" :total="50" show-less-items />
+    <a-pagination v-model:current="current" :total="total" show-less-items @change="handlePageChange"/>
   </a-layout>
-
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
-import {commentPageQuery} from "@/api/Comment/commentPageQuery.js";
-import {useUserInfoStore} from "@/stores/userInfoStore.js";
-import {addMessageAPI} from "@/api/Comment/addMessageAPI.js";
+import { commentPageQuery } from "@/api/Comment/commentPageQuery.js";
+import { useUserInfoStore } from "@/stores/userInfoStore.js";
+import { addMessageAPI } from "@/api/Comment/addMessageAPI.js";
+const total = ref(10);
 const current = ref(1);
-const apiUrl = 'http://localhost:3000/api/messages';
-
 const username = ref('');
 const content = ref('');
 const messages = ref([]);
 let userInfoStore = useUserInfoStore();
+
 // 获取所有留言
 const fetchMessages = async () => {
   try {
-    const response = await commentPageQuery({page: current.value,pageSize: 10});
-    messages.value = response.data;
+    const response = await commentPageQuery({ page: current.value, pageSize: 10 });
+    messages.value = response.data.records;
+    total.value = response.data.total
+    console.log(messages.value);
   } catch (error) {
     message.error('获取留言失败');
   }
 };
-
+const handlePageChange = async () => {
+  await fetchMessages();
+}
 // 添加新留言
 const addMessage = async () => {
-  if (!username.value || !content.value) {
-    message.error('用户名和留言内容不能为空');
+  if (!content.value) {
+    message.error('内容不能为空');
     return;
   }
 
   try {
-    const newMessage = { username: username.value, content: content.value };
-    let user = localStorage.getItem('username')
-    await addMessageAPI({user,newMessage})
-    messages.value.push(newMessage);
-
-    // 清空输入框
-    username.value = '';
-    content.value = '';
+    const commentDTO = { user: localStorage.getItem("user"), comment: content.value };
+    const response = await addMessageAPI(commentDTO);
+    console.log(response)
+    console.log(response.code)
+    // 确保后端成功保存数据后，重新获取所有留言
+    if (response && response.code === 200) {
+      console.log("122222222222222222")
+      await fetchMessages();
+      // 清空输入框
+      username.value = '';
+      content.value = '';
+    }
   } catch (error) {
     message.error('发布留言失败');
   }
