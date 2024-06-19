@@ -44,6 +44,7 @@
                 <a>删除</a>
               </a-popconfirm>
             </a-space>
+            <a @click="markGraduated(record.id)">&nbsp;毕业</a>
           </template>
         </template>
       </a-table>
@@ -99,6 +100,8 @@ import {deleteStudent} from "@/api/Student/deleteStudent.js"
 import { updateStudent} from "@/api/Student/updateStudent.js"
 import { studentPageQuery } from "@/api/Student/studentPageQuery.js"
 import {getCoachByName} from "@/api/Coach/getCoachByName.js";
+import {message} from "ant-design-vue";
+import {addGraduation} from "@/api/Graduation/addGraduation.js";
 
 //新增教练相关属性
 const modalText = ref('Content of the modal');
@@ -219,9 +222,11 @@ const rules = {
   ],
 
 };
-const checkCoach = () => {
-
-
+const markGraduated = async (id) => {
+  const response = await addGraduation(id)
+  if(response.code === 200){
+    message.success("将该学生标记为已毕业！请去毕业管理进行查看");
+  }
 }
 const showModal = () => {
   open.value = true;
