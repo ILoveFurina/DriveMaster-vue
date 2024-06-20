@@ -187,22 +187,6 @@ import {getUser} from "@/api/login/getUser.js";
   height: 65vh; /* 容器高度为视口高度 */
 
 }
-/*
-@font-face {
-  font-family: PINGFANG ZHUN;
-  src: url('@/assets/font/PINGFANG ZHUN.ttf');
-}
-@font-face {
-  font-family: PINGFANG JI XI;
-  src: url('@/assets/font/PINGFANG JI XI.ttf');
-}
-@font-face {
-  font-family: PINGFANG XI;
-  src: url('@/assets/font/PINGFANG XI.ttf');
-}
-
- */
-
 @font-face {
   font-family: PINGFANG QIAN XI;
   src: url('@/assets/font/PINGFANG QIAN XI.ttf');

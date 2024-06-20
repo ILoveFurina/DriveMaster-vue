@@ -11,11 +11,12 @@
         <a-menu-item key="1" @click="router.push('/')">信息管理</a-menu-item>
         <a-menu-item key="2" @click="router.push('/userProfile')">个人中心</a-menu-item>
         <a-menu-item key="3" @click="router.push('/messageBoard')">留言板</a-menu-item>
+        <a-menu-item key="4" @click="router.push('/updateLog')">更新日志</a-menu-item>
       </a-menu>
     </a-layout-header>
     <a-layout-content style="padding: 0 50px; display: flex; flex-direction: column; flex: 1;">
       <a-breadcrumb style="margin: 16px 0">
-        <a-breadcrumb-item>在记录添加与更新中，请输入正确的格式，不然可能会导致错误</a-breadcrumb-item>
+
       </a-breadcrumb>
       <a-layout style="padding: 24px 0; background: #fff; flex: 1;">
         <router-view/>

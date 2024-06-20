@@ -13,7 +13,7 @@
     <a-list v-if="messages.length" :data-source="messages" style="margin-top: 24px;">
       <template #renderItem="{ item }">
         <a-list-item>
-          <a-list-item-meta :title="item.user" :description="item.comment" />
+          <a-list-item-meta :title="item.user+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+item.createTime" :description="item.comment" />
         </a-list-item>
       </template>
     </a-list>
@@ -23,17 +23,14 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
 import { message } from 'ant-design-vue';
 import { commentPageQuery } from "@/api/Comment/commentPageQuery.js";
-import { useUserInfoStore } from "@/stores/userInfoStore.js";
 import { addMessageAPI } from "@/api/Comment/addMessageAPI.js";
 const total = ref(10);
 const current = ref(1);
 const username = ref('');
 const content = ref('');
 const messages = ref([]);
-let userInfoStore = useUserInfoStore();
 
 // 获取所有留言
 const fetchMessages = async () => {

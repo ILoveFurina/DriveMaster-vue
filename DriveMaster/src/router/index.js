@@ -7,7 +7,7 @@ import Recall from '@/views/RecallPassword/index.vue'
 import ProjectInfo from "@/components/ProjectInfo.vue";
 import UserProfile from "@/views/UserProfile/index.vue"
 import MessageBoard from "@/views/MessageBoard/index.vue"
-
+import UpdateLog from "@/views/updateLog/index.vue"
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -68,6 +68,10 @@ const router = createRouter({
         {
           path: "/messageBoard",
           component: MessageBoard
+        },
+        {
+          path: "/updateLog",
+          component: UpdateLog
         }
       ]
     },

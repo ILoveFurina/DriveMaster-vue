@@ -1,5 +1,6 @@
 <template>
   <a-layout style="min-height: 100vh">
+    <a-breadcrumb-item>在记录添加与更新中，请输入正确的格式，不然可能会导致错误</a-breadcrumb-item>
     <a-layout style="padding: 24px 0; background: #fff; flex: 1;">
       <a-layout-sider width="200" style="background: #fff;">
         <a-menu

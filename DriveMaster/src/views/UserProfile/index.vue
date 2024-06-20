@@ -1,16 +1,29 @@
 <template>
   你的用户名是 :{{ user }}
+  <div style="width: 200px;margin-top: 20px">
+    <a-button type="primary" @click="logout" danger>退出登录</a-button>
+  </div>
 </template>
 
 
 <script setup>
 import { ref } from 'vue';
 import {useRouter} from "vue-router";
+import httpInstance from "@/utils/http.js";
+import {message} from "ant-design-vue";
 
 const selectedKeys1 = ref(['2']);
 const selectedKeys2 = ref(['1']);
 const router = useRouter();
 const user = localStorage.getItem("user");
+
+const logout = async () => {
+
+  const response = await httpInstance.get("/admin/user/logout")
+  if(response.code === 200){
+    router.push("/login")
+  }
+}
 
 </script>
 
