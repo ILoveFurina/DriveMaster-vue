@@ -1,5 +1,15 @@
 <template>
   <div class="graduation-management">
+    <div style="margin-bottom: 10px">
+      <a-popover title="请移步！">
+        <template #content>
+          <p>请去'学员管理'中对学员点击'毕业'</p>
+          <p>即可添加到此毕业管理中</p>
+        </template>
+        <a-button type="primary">新增毕业学员</a-button>
+      </a-popover>
+    </div>
+
     <div class="graduation-list">
       <a-table bordered :data-source="dataSource" :columns="columns">
         <template #bodyCell="{ column, text, record }">
