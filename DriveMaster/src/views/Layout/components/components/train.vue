@@ -3,7 +3,7 @@
     <!-- 新增学员按钮-->
     <a-button type="primary" @click="showModal">新增学员</a-button>
     <a-modal v-model:open="open" title="新增学员" :confirm-loading="confirmLoading" @ok="handleAddOk">
-      <a-form :model="addForm" :rules="rules">
+      <a-form :model="addForm" :rules="rules" ref="addFormRef">
         <a-form-item label="学员编号" name="studentId">
           <a-input v-model:value="addForm.studentId" />
         </a-form-item>
@@ -18,7 +18,13 @@
           <a-input v-model:value="addForm.period" />
         </a-form-item>
         <a-form-item label="训练日期" name="trainDate">
-          <a-date-picker v-model="addForm.trainDate" format="YYYY-MM-DD HH:mm:ss" :showTime="{ defaultValue: moment('00:00:00', 'HH:mm:ss') }" />
+          <a-space direction="vertical">
+            <a-date-picker
+                v-model:value="addForm.trainDate"
+                value-format="YYYY-MM-DD HH:mm:ss"
+                show-time
+            />
+          </a-space>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -69,7 +75,13 @@
           <a-input v-model:value="editForm.period" />
         </a-form-item>
         <a-form-item label="训练日期" name="trainDate">
-          <a-input v-model:value="editForm.trainDate" />
+          <a-space direction="vertical">
+            <a-date-picker
+                v-model:value="editForm.trainDate"
+                value-format="YYYY-MM-DD HH:mm:ss"
+                show-time
+            />
+          </a-space>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -84,9 +96,10 @@ import {addTrain} from "@/api/Train/addTrain.js";
 import {trainPageQuery} from "@/api/Train/trainPageQuery.js";
 import {updateTrain} from "@/api/Train/updateTrain.js";
 import {deleteTrain} from "@/api/Train/deleteTrain.js";
+import {validationRules} from "@/utils/validationRules.js";
 
 //新增教练相关属性
-const modalText = ref('Content of the modal');
+const addFormRef = ref();
 const open = ref(false);
 const confirmLoading = ref(false);
 const addForm = reactive({});
@@ -137,33 +150,10 @@ const columns = [
 ];
 
 
-const rules = {
-  studentId: [
-    {
-      required: true,
-      pattern: /^XY\d{6}$/,
-      message: '请输入正确的学号,学号为XY+6位数字,例如XY000001',
-      trigger: 'change',
-    },
-  ],
-  name: [
-    {
-      required: true,
-      validator: "",
-      trigger: 'change',
-    }
-  ],
-  subjectTypeMap: [
-    {
-      required: true,
-      trigger: 'change',
-    }
-  ],
-
-};
+const rules = validationRules
 
 const handleAddOk = async () => {
-  modalText.value = 'The modal will be closed after two seconds';
+  await addFormRef.value.validate();
   confirmLoading.value = true;
   setTimeout(async () => {
     open.value = false;
@@ -202,14 +192,14 @@ const showModal = () => {
   open.value = true;
 };
 
-const showEditModal = ({subjectType, period, trainDate, id}) => {
-  Object.assign(editForm, {subjectType, period, trainDate, id}); // 初始化编辑表单数据
+const showEditModal = ({subjectType, period,trainDate, id}) => {
+  Object.assign(editForm, {subjectType, period, trainDate,id}); // 初始化编辑表单数据
   isModalVisible.value = true;
 };
 
 const handleOk = async () => {
   try {
-    console.log(editForm)
+    console.log(JSON.stringify(editForm))
     await updateTrain(editForm); // 更新教练信息
     isModalVisible.value = false;
     await fetchTrains({page: current.value, pageSize: pageSizeInfo.value}); // 重新获取数据

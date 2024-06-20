@@ -2,8 +2,8 @@
   <div>
     <!-- 新增学员按钮-->
     <a-button type="primary" @click="showModal">新增学员</a-button>
-    <a-modal v-model:open="open" title="新增学员" :confirm-loading="confirmLoading" @ok="handleAddOk">
-      <a-form :model="addForm" :rules="rules">
+    <a-modal v-model:open="open" title="新增学员" :confirm-loading="confirmLoading" @ok="handleAddOk" >
+      <a-form :model="addForm" :rules="rules" ref="addFormRef">
         <a-form-item label="姓名" name="name">
           <a-input v-model:value="addForm.name" />
         </a-form-item>
@@ -19,7 +19,7 @@
         <a-form-item label="教练名" name="coachName" @blur="checkCoach">
           <a-input v-model:value="addForm.coachName" />
         </a-form-item>
-        <a-form-item label="申请类型" >
+        <a-form-item label="申请类型" name="applyType">
           <a-select v-model:value="addForm.applyType">
             <a-select-option v-for="(label, value) in carTypeMap" :key="value" :value="value">
               {{ label }}
@@ -77,8 +77,8 @@
         <a-form-item label="地址" name="address">
           <a-input v-model:value="editForm.address" />
         </a-form-item>
-        <a-form-item label="申请类型" >
-          <a-select v-model:value="editForm.carType">
+        <a-form-item label="申请类型" name="applyType">
+          <a-select v-model:value="editForm.applyType">
             <a-select-option v-for="(label, value) in carTypeMap" :key="value" :value="value">
               {{ label }}
             </a-select-option>
@@ -102,18 +102,18 @@ import { studentPageQuery } from "@/api/Student/studentPageQuery.js"
 import {getCoachByName} from "@/api/Coach/getCoachByName.js";
 import {message} from "ant-design-vue";
 import {addGraduation} from "@/api/Graduation/addGraduation.js";
+import {validationRules} from "@/utils/validationRules.js";
 
-//新增教练相关属性
-const modalText = ref('Content of the modal');
 const open = ref(false);
 const confirmLoading = ref(false);
 const addForm = reactive({});
+const addFormRef = ref();
 
 const current = ref(1); // 当前页码
 const totalItems = ref(85); // 总条目数
 const pageSizeInfo = ref(10); // 每页条目数
-const coaches = ref([]); // 教练数据
-const dataSource = coaches; // 教练数据
+const coaches = ref([]);
+const dataSource = coaches;
 const count = computed(() => dataSource.value.length); // 当前页数据条数
 
 const isModalVisible = ref(false); // 控制弹窗显示状态
@@ -166,62 +166,8 @@ const columns = [
   },
 ];
 
+const rules = validationRules;
 
-const rules = {
-  studentId: [
-    {
-      required: true  ,
-      pattern: /^XY\d{6}$/,
-      message: '请输入正确的学号,学号为XY+6位数字,例如XY000001',
-      trigger: 'change',
-    },
-  ],
-  name: [
-    {
-      required: true,
-      validator: "",
-      trigger: 'change',
-    }
-  ],
-  coachName: [
-    {
-      required: true,
-      message: '请输入教练名',
-      trigger: 'change',
-    },
-  ],
-  phone: [
-    {
-      required: true,
-      pattern: /^1[3456789]\d{9}$/,
-      message: '请输入正确的手机号',
-      trigger: 'change',
-    },
-  ],
-  idCard: [
-    {
-      pattern: /^[0-9a-zA-Z]{18}$/,
-      message: '请输入正确的身份证号码',
-      required: true,
-      validator: "",
-      trigger: 'change',
-    }
-  ],
-  address: [
-    {
-      required: true,
-      message: '请输入地址',
-      trigger: 'change',
-    },
-  ],
-  applyType: [
-    {
-      required: true,
-      trigger: 'change',
-    }
-  ],
-
-};
 const markGraduated = async (id) => {
   const response = await addGraduation(id)
   if(response.code === 200){
@@ -233,7 +179,7 @@ const showModal = () => {
 };
 
 const handleAddOk = async () => {
-  modalText.value = 'The modal will be closed after two seconds';
+  await addFormRef.value.validate();
   confirmLoading.value = true;
   setTimeout(async () => {
     open.value = false;

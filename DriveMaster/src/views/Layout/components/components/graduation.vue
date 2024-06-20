@@ -38,12 +38,12 @@
     </div>
     <a-modal
         v-model:visible="isModalVisible"
-        title="Edit Graduation"
+        title="编辑毕业学员"
         @ok="handleOk"
         @cancel="handleCancel"
     >
       <a-form :model="editForm" :rules="rules">
-        <a-form-item label="申请类型" >
+        <a-form-item label="申请类型" name="licenseType">
           <a-select v-model:value="editForm.licenseType">
             <a-select-option v-for="(label, value) in licenseTypeMap" :key="value" :value="value">
               {{ label }}
@@ -51,7 +51,13 @@
           </a-select>
         </a-form-item>
         <a-form-item label="毕业时间" name="graduateTime">
-          <a-input v-model:value="editForm.graduateTime" />
+          <a-space direction="vertical">
+            <a-date-picker
+                v-model:value="editForm.graduateTime"
+                value-format="YYYY-MM-DD HH:mm:ss"
+                show-time
+            />
+          </a-space>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -65,13 +71,6 @@ import {graduationPageQuery} from "@/api/Graduation/graduationPageQuery.js";
 import {updateGraduation} from "@/api/Graduation/updateGraduation.js";
 import {deleteGraduation} from "@/api/Graduation/deleteGraduation.js";
 import moment from "moment";
-
-
-//新增教练相关属性
-const modalText = ref('Content of the modal');
-const open = ref(false);
-const confirmLoading = ref(false);
-const addForm = reactive({});
 
 const current = ref(1); // 当前页码
 const totalItems = ref(85); // 总条目数
@@ -116,26 +115,16 @@ const rules = {
   licenseType: [
     {
       required: true,
-      trigger: 'change',
+      trigger: ['change','blur']
     }
   ],
+  graduateTime: [
+      {
+        required: true,
+        trigger: ['change','blur'],
+      }
+  ]
 
-
-};
-
-const showModal = () => {
-  open.value = true;
-};
-
-const handleAddOk = async () => {
-  modalText.value = 'The modal will be closed after two seconds';
-  confirmLoading.value = true;
-  setTimeout(async () => {
-    open.value = false;
-    confirmLoading.value = false;
-    await addGraduation(addForm);
-    await fetchGraduationData({ page: current.value, pageSize: pageSizeInfo.value });
-  }, 200);
 };
 
 const onDelete = async (id) => {

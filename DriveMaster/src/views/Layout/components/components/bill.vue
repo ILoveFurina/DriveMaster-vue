@@ -3,11 +3,11 @@
     <!-- 新增学员按钮-->
     <a-button type="primary" @click="showModal">新增学员</a-button>
     <a-modal v-model:open="open" title="新增学员" :confirm-loading="confirmLoading" @ok="handleAddOk">
-      <a-form :model="addForm" :rules="rules">
+      <a-form :model="addForm" :rules="rules" ref="addFormRef">
         <a-form-item label="学员编号" name="studentId">
           <a-input v-model:value="addForm.studentId" />
         </a-form-item>
-        <a-form-item label="费用类型" >
+        <a-form-item label="费用类型" name="expenseType">
           <a-select v-model:value="addForm.expenseType">
             <a-select-option v-for="(label, value) in expenseTypeMap" :key="value" :value="value">
               {{ label }}
@@ -23,7 +23,7 @@
         <a-form-item label="实际缴费金额" name="actualPayment">
           <a-input v-model:value="addForm.actualPayment" />
         </a-form-item>
-        <a-form-item label="申请类型" >
+        <a-form-item label="申请类型" name="applyType">
           <a-select v-model:value="addForm.applyType">
             <a-select-option v-for="(label, value) in carTypeMap" :key="value" :value="value">
               {{ label }}
@@ -68,7 +68,7 @@
         @cancel="handleCancel"
     >
       <a-form :model="editForm" :rules="rules">
-        <a-form-item label="费用类型" >
+        <a-form-item label="费用类型" name="expenseType">
           <a-select v-model:value="editForm.expenseType">
             <a-select-option v-for="(label, value) in expenseTypeMap" :key="value" :value="value">
               {{ label }}
@@ -91,26 +91,20 @@
 
 <script setup>
 import { ref, onMounted, computed, reactive } from 'vue';
-
-import { addStudent } from "@/api/Student/addStudent.js";
-import {deleteStudent} from "@/api/Student/deleteStudent.js"
-import { updateStudent} from "@/api/Student/updateStudent.js"
-import { studentPageQuery } from "@/api/Student/studentPageQuery.js"
-import {getCoachByName} from "@/api/Coach/getCoachByName.js";
 import {message} from "ant-design-vue";
-import {addGraduation} from "@/api/Graduation/addGraduation.js";
 import {billPageQuery} from "@/api/Bill/billPageQuery.js";
 import {deleteBill} from "@/api/Bill/deleteBill.js";
 import {isStudentExists} from "@/api/Student/isStudentExists.js";
 import {addBill} from "@/api/Bill/addBill.js";
 import {updateBill} from "@/api/Bill/updateBill.js";
+import {validationRules} from "@/utils/validationRules.js";
 
 //新增教练相关属性
 const modalText = ref('Content of the modal');
 const open = ref(false);
 const confirmLoading = ref(false);
 const addForm = reactive({});
-
+const addFormRef = ref();
 const current = ref(1); // 当前页码
 const totalItems = ref(85); // 总条目数
 const pageSizeInfo = ref(10); // 每页条目数
@@ -191,57 +185,14 @@ const columns = [
 ];
 
 
-const rules = {
-  studentId: [
-    {
-      required: true  ,
-      pattern: /^XY\d{6}$/,
-      message: '请输入正确的学号,学号为XY+6位数字,例如XY000001',
-      trigger: 'change',
-    },
-  ],
-  name: [
-    {
-      required: true,
-      validator: "",
-      trigger: 'change',
-    }
-  ],
-  expenseType:[
-      {
-        required: true,
-        trigger: 'change',
-      }
-  ],
-  setmealAmount: [
-    {
-      required: true,
-      message: '请输入套餐金额',
-      trigger: 'change',
-    },
-  ],
-  actualPayment: [
-    {
-      required: true,
-      message: '请输入实际缴费金额',
-      trigger: 'change',
-    },
-  ],
-  discountAmount: [
-    {
-      required: true,
-      message: '请输入优惠金额',
-      trigger: 'change',
-    },
-  ],
-};
+const rules = validationRules
 
 const showModal = () => {
   open.value = true;
 };
 
 const handleAddOk = async () => {
-  modalText.value = 'The modal will be closed after two seconds';
+  await addFormRef.value.validate();
   confirmLoading.value = true;
   if(await isStudentExists(addForm.studentId)){
     setTimeout(async () => {
@@ -251,7 +202,7 @@ const handleAddOk = async () => {
       await fetchBills({ page: current.value, pageSize: pageSizeInfo.value });
     }, 200);
   }else{
-    message.error("该学号不存在,请先添加该学员");
+    message.error("该学号不存在,请检查学员列表");
   }
 };
 

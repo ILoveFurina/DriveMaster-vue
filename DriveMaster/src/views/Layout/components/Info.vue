@@ -46,7 +46,6 @@
 <script setup>
 import {ref} from 'vue';
 import {useRouter} from 'vue-router';
-import Page from '@/views/Layout/components/components/page.vue';
 
 const selectedKeys2 = ref(['1']);
 const router = useRouter();
