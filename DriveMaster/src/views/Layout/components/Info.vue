@@ -17,7 +17,7 @@
             <span>毕业管理</span>
           </a-menu-item>
           <a-menu-item key="4" @click="router.push('/info/bill')">
-            <span>费用管理</span>
+            <span>账单管理</span>
           </a-menu-item>
           <a-menu-item key="5" @click="router.push('/info/train')">
             <span>训练管理</span>

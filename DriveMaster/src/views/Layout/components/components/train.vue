@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 新增学员按钮-->
-    <a-button type="primary" @click="showModal">新增学员</a-button>
+    <a-button type="primary" @click="showModal">新增训练</a-button>
     <a-modal v-model:open="open" title="新增学员" :confirm-loading="confirmLoading" @ok="handleAddOk">
       <a-form :model="addForm" :rules="rules" ref="addFormRef">
         <a-form-item label="学员编号" name="studentId">

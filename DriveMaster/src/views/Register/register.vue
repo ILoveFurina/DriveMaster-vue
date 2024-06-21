@@ -22,14 +22,8 @@
             @validate="handleValidate"
             @finishFailed="handleFinishFailed"
         >
-          <a-form-item has-feedback label="用户名" name="name">
-            <a-input v-model:value="formState.name"  autocomplete="off" style="margin-left: 30px" placeholder="请输入您的用户名"/>
-          </a-form-item>
           <a-form-item has-feedback label="账号" name="username">
             <a-input v-model:value="formState.username"  autocomplete="off" style="margin-left: 30px" placeholder="请输入您的账号"/>
-          </a-form-item>
-          <a-form-item has-feedback label="手机号" name="phone">
-            <a-input v-model:value="formState.phone"  autocomplete="off" style="margin-left: 30px" placeholder="请输入您的手机号（非必填)"/>
           </a-form-item>
           <a-form-item has-feedback label="密码" name="pass">
             <a-input v-model:value="formState.pass" type="password" autocomplete="off" style="margin-left: 30px" placeholder="请输入您的密码"/>
@@ -37,6 +31,13 @@
           <a-form-item has-feedback label="确认密码" name="checkPass">
             <a-input v-model:value="formState.checkPass" type="password" autocomplete="off" style="margin-left: 30px" placeholder="请再次输入您的密码"/>
           </a-form-item>
+          <a-form-item has-feedback label="昵称" name="name">
+            <a-input v-model:value="formState.name"  autocomplete="off" style="margin-left: 30px" placeholder="请输入您的昵称"/>
+          </a-form-item>
+          <a-form-item has-feedback label="手机号" name="phone">
+            <a-input v-model:value="formState.phone"  autocomplete="off" style="margin-left: 30px" placeholder="请输入您的手机号（非必填)"/>
+          </a-form-item>
+
           <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
             <a-button @click="router.push('/login')" style="float: left" type="primary" :icon="h(LeftOutlined)">返回</a-button>
             <a-button type="primary" html-type="submit">注册</a-button>

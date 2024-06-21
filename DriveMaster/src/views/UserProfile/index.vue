@@ -2,7 +2,7 @@
   <a-layout>
     <a-layout-content style="margin-left: 50px">
       <a-card class="user-info-card" title="用户信息">
-        <p><strong>用户名:</strong> {{ user }}</p>
+        <p><strong>昵称:</strong> {{ user }}</p>
         <p><strong>账号:</strong> {{ username }}</p>
         <p><strong>手机号:</strong> {{ phone }}</p>
         <p><strong>注册时间:</strong> {{ createTime }}</p>
@@ -25,6 +25,7 @@
       </a-card>
     </a-layout-content>
   </a-layout>
+  <a-button type="primary" style="width: 200px;margin-left: 50px" danger @click="userLogout"> 退出登录</a-button>
 </template>
 <script setup>
 import {recallPwd} from "@/api/login/recallPwd.js";
@@ -41,7 +42,18 @@ const phone = computed(()=>{
 const createTime = localStorage.getItem("createTime")
 import {ref, reactive, computed} from 'vue';
 import {message} from "ant-design-vue";
+import {logout} from "@/api/login/logout.js";
+import {useRouter} from "vue-router"
 
+const router = useRouter();
+const userLogout =async () => {
+  const response = await logout();
+  if(response.code===200){
+    router.push("/login")
+    message.success("退出成功",3)
+  }
+
+}
 
 const form = reactive({
   currentPassword: '',
