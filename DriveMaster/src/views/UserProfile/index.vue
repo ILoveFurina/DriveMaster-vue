@@ -1,59 +1,127 @@
 <template>
-  你的用户名是 :{{ user }}
-  <div style="width: 200px;margin-top: 20px">
-    <a-button type="primary" @click="logout" danger>退出登录</a-button>
-  </div>
+  <a-layout>
+    <a-layout-content style="margin-left: 50px">
+      <a-card class="user-info-card" title="用户信息">
+        <p><strong>用户名:</strong> {{ user }}</p>
+        <p><strong>账号:</strong> {{ username }}</p>
+        <p><strong>手机号:</strong> {{ phone }}</p>
+        <p><strong>注册时间:</strong> {{ createTime }}</p>
+      </a-card>
+      <a-card class="change-password-card" title="修改密码">
+        <a-form :model="form" :rules="rules" ref="formRef">
+          <a-form-item label="当前密码" name="currentPassword">
+            <a-input type="password" v-model:value="form.currentPassword" />
+          </a-form-item>
+          <a-form-item label="新密码" name="newPassword">
+            <a-input type="password" v-model:value="form.newPassword" />
+          </a-form-item>
+          <a-form-item label="确认新密码" name="confirmNewPassword">
+            <a-input type="password" v-model:value="form.confirmNewPassword" />
+          </a-form-item>
+          <a-form-item>
+            <a-button type="primary" @click="handleSubmit">提交</a-button>
+          </a-form-item>
+        </a-form>
+      </a-card>
+    </a-layout-content>
+  </a-layout>
 </template>
-
-
 <script setup>
-import { ref } from 'vue';
-import {useRouter} from "vue-router";
-import httpInstance from "@/utils/http.js";
+import {recallPwd} from "@/api/login/recallPwd.js";
+
+const username = localStorage.getItem("user")
+const user = localStorage.getItem("username")
+const phone = computed(()=>{
+  if(localStorage.getItem("phone")==null){
+    return "无"
+  }
+  return localStorage.getItem("phone")
+})
+
+const createTime = localStorage.getItem("createTime")
+import {ref, reactive, computed} from 'vue';
 import {message} from "ant-design-vue";
 
-const selectedKeys1 = ref(['2']);
-const selectedKeys2 = ref(['1']);
-const router = useRouter();
-const user = localStorage.getItem("user");
 
-const logout = async () => {
+const form = reactive({
+  currentPassword: '',
+  newPassword: '',
+  confirmNewPassword: ''
+});
 
-  const response = await httpInstance.get("/admin/user/logout")
-  if(response.code === 200){
-    router.push("/login")
+const formRef = ref(null);
+
+const rules = {
+  currentPassword: [{ required: true, message: '请输入当前密码' },{ pattern: /^[a-zA-Z0-9]{6,16}$/, trigger: 'change', message: '密码只能由6-16位的数字、字母组成' }],
+  newPassword: [
+    { required: true, trigger: 'change', message: '请输入新密码' },
+    { pattern: /^[a-zA-Z0-9]{6,16}$/, trigger: 'change', message: '密码只能由6-16位的数字、字母组成' }
+  ],
+  confirmNewPassword: [
+    { required: true, message: '请确认新密码',trigger: 'change'},
+    {
+      validatePass2: (rule, value) => value === form.newPassword,
+      message: '两次输入的新密码不一致',
+      trigger: 'change' }
+  ]
+};
+const validatePass2 = async (_rule, value) => {
+  if (value === '') {
+    return Promise.reject('请再次输入密码！');
+  } else if (value !== form.newPassword) {
+    return Promise.reject("两次输入的密码不匹配");
+  } else {
+    return Promise.resolve();
+  }
+};
+const handleSubmit = async () => {
+  try {
+    await formRef.value.validate();
+
+    // 处理提交逻辑
+    const response = await recallPwd({oldPassword:form.currentPassword,newPassword:form.newPassword, id:localStorage.getItem("id")})
+    if (response.code === 200) {
+      console.log('密码修改成功:', form);
+      message.info('密码修改成功',3)
+      formRef.value.resetFields();
+    }else{
+      message.error(response.msg,3)
+    }
+  } catch (error){
+    console.log('验证失败:', error);
   }
 }
-
 </script>
-
 <style scoped>
-html, body, #app {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+.personal-center {
+  min-height: 100vh;
 }
 
-#components-layout-demo-top-side .logo {
-  float: left;
-  width: 120px;
-  height: 31px;
-  margin: 16px 24px 16px 0;
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.ant-row-rtl #components-layout-demo-top-side .logo {
-  float: right;
-  margin: 16px 0 16px 24px;
-}
-
-.page {
+.header {
+  color: white;
+  font-size: 24px;
   text-align: center;
+  padding: 16px;
+  background: #001529;
+}
+
+.content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user-info-card,
+.change-password-card {
+  width: 100%;
+  max-width: 600px;
   margin-bottom: 24px;
 }
 
-.site-layout-background {
-  background: #fff;
+.footer {
+  text-align: center;
+  padding: 12px;
+  background: #f0f2f5;
 }
 </style>
-

@@ -63,7 +63,7 @@
         @ok="handleOk"
         @cancel="handleCancel"
     >
-      <a-form :model="editForm" :rules="rules">
+      <a-form :model="editForm" :rules="rules" ref="editFormRef">
         <a-form-item label="科目类型" name="subjectType">
           <a-select v-model:value="editForm.subjectType">
             <a-select-option v-for="(label, value) in subjectTypeMap" :key="value" :value="value">
@@ -103,7 +103,7 @@ const addFormRef = ref();
 const open = ref(false);
 const confirmLoading = ref(false);
 const addForm = reactive({});
-
+const editFormRef = ref();
 const current = ref(1); // 当前页码
 const totalItems = ref(85); // 总条目数
 const pageSizeInfo = ref(10); // 每页条目数
@@ -200,6 +200,7 @@ const showEditModal = ({subjectType, period,trainDate, id}) => {
 const handleOk = async () => {
   try {
     console.log(JSON.stringify(editForm))
+    await editFormRef.value.validate();
     await updateTrain(editForm); // 更新教练信息
     isModalVisible.value = false;
     await fetchTrains({page: current.value, pageSize: pageSizeInfo.value}); // 重新获取数据

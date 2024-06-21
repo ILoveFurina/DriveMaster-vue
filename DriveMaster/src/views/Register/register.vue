@@ -23,19 +23,19 @@
             @finishFailed="handleFinishFailed"
         >
           <a-form-item has-feedback label="用户名" name="name">
-            <a-input v-model:value="formState.name"  autocomplete="off" style="margin-left: 30px"/>
+            <a-input v-model:value="formState.name"  autocomplete="off" style="margin-left: 30px" placeholder="请输入您的用户名"/>
           </a-form-item>
           <a-form-item has-feedback label="账号" name="username">
-            <a-input v-model:value="formState.username"  autocomplete="off" style="margin-left: 30px"/>
+            <a-input v-model:value="formState.username"  autocomplete="off" style="margin-left: 30px" placeholder="请输入您的账号"/>
           </a-form-item>
           <a-form-item has-feedback label="手机号" name="phone">
-            <a-input v-model:value="formState.phone"  autocomplete="off" style="margin-left: 30px"/>
+            <a-input v-model:value="formState.phone"  autocomplete="off" style="margin-left: 30px" placeholder="请输入您的手机号（非必填)"/>
           </a-form-item>
           <a-form-item has-feedback label="密码" name="pass">
-            <a-input v-model:value="formState.pass" type="password" autocomplete="off" style="margin-left: 30px"/>
+            <a-input v-model:value="formState.pass" type="password" autocomplete="off" style="margin-left: 30px" placeholder="请输入您的密码"/>
           </a-form-item>
           <a-form-item has-feedback label="确认密码" name="checkPass">
-            <a-input v-model:value="formState.checkPass" type="password" autocomplete="off" style="margin-left: 30px" />
+            <a-input v-model:value="formState.checkPass" type="password" autocomplete="off" style="margin-left: 30px" placeholder="请再次输入您的密码"/>
           </a-form-item>
           <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
             <a-button @click="router.push('/login')" style="float: left" type="primary" :icon="h(LeftOutlined)">返回</a-button>
@@ -56,6 +56,9 @@ import {
 } from '@ant-design/icons-vue';
 import {useRouter} from "vue-router";
 import {register} from "@/api/register/register.js";
+import {getUser} from "@/api/login/getUser.js";
+import {checkUserExists} from "@/api/login/checkUserExists.js";
+import {checkUsernameExists} from "@/api/login/checkUsernameExists.js";
 
 const router = useRouter();
 const formRef = ref();
@@ -72,6 +75,10 @@ const validateName = async (_rule, value) =>{
   }else if (!validateInput(value)){
     return Promise.reject('用户名只能由5-16位的中文、字母、数字、下划线组成');
   }else{
+    const res = await checkUserExists(value);
+    if (res.code === 500){
+      return Promise.reject('该用户名已被占用');
+    }
     return Promise.resolve();
   }
 }
@@ -81,6 +88,10 @@ const validateUsername = async (_rule, value) => {
   }else if (!/^[a-zA-Z0-9]{5,16}$/.test(value)){
     return Promise.reject('账号只能由5-16位的数字、字母组成');
   }else{
+    const res = await checkUsernameExists(value);
+    if (res.code === 500){
+      return Promise.reject('该用户名已被占用');
+    }
     return Promise.resolve();
   }
 }

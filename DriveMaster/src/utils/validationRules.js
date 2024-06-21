@@ -114,7 +114,7 @@ export const validationRules = {
             trigger: ['blur', 'change'],
         },
         {
-            pattern: /^\d+(\.\d{1,2})?$/,
+            pattern: /^(0|[1-9]\d{0,7})(\.\d{1,2})?$/,
             message: '请输入有效的金额格式（最多两位小数）',
             trigger: ['blur', 'change'],
         },

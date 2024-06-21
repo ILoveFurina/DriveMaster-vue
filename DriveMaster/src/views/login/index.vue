@@ -78,10 +78,13 @@ const onFinish = async values => {
   console.log('Success:', values);
 
   try {
-    const loginSuccess = await login(values.username, values.password);
-    if (loginSuccess) {
-      const response = await getUser(values.username);
-      localStorage.setItem("user",response.data.user);
+    const response = await login(values.username, values.password);
+    if (response.code === 200) {
+      localStorage.setItem("user",response.data.name);
+      localStorage.setItem("username",response.data.username);
+      localStorage.setItem("id",response.data.id);
+      localStorage.setItem("createTime",response.data.createTime);
+
       router.push("/").catch(error => {
         console.error("Router push failed:", error);
       });
@@ -101,7 +104,7 @@ const disabled = computed(() => {
 
 const validateUsername = async (_rule, value) => {
   if(value === '' ){
-    return Promise.reject("用户名不能为空");
+    return Promise.reject("账号不能为空");
   }else {
     let reg = /^[a-zA-Z0-9]{5,16}$/
     if(!reg.test(value)){

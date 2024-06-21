@@ -10,11 +10,12 @@ export async function login(username, password) {
         })
 
         console.log(response)
+
         if (response.code === 200) {
             message.success(response.msg, 3);
-            return true
+            return response
         }
-        if (response.code === 500) {
+        else {
             message.error(response.msg, 3);
             return false
         }

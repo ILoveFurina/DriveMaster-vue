@@ -193,6 +193,7 @@ const showEditModal = ({ id, name, phone, idCard, carId, carType}) => {
 const handleOk = async () => {
   try {
     console.log(editForm)
+    await editFormRef.value.validate();
     await updateCoach(editForm); // 更新教练信息
     isModalVisible.value = false;
     fetchCoaches({ page: current.value, pageSize: pageSizeInfo.value }); // 重新获取数据

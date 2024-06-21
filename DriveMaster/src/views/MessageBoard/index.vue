@@ -3,7 +3,7 @@
     <a-card title="留言板" bordered>
       <a-form @submit.prevent="addMessage">
         <a-form-item>
-          <a-textarea v-model:value="content" placeholder="留言内容" />
+          <a-textarea v-model:value="content" placeholder="请不要发表违法,不礼貌的留言！" />
         </a-form-item>
         <a-form-item>
           <a-button type="primary" @click="addMessage">发布留言</a-button>

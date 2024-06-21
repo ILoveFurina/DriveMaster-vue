@@ -67,7 +67,7 @@
         @ok="handleOk"
         @cancel="handleCancel"
     >
-      <a-form :model="editForm" :rules="rules">
+      <a-form :model="editForm" :rules="rules" ref="editFormRef">
         <a-form-item label="费用类型" name="expenseType">
           <a-select v-model:value="editForm.expenseType">
             <a-select-option v-for="(label, value) in expenseTypeMap" :key="value" :value="value">
@@ -111,7 +111,7 @@ const pageSizeInfo = ref(10); // 每页条目数
 const bills = ref([]);
 const dataSource = bills;
 const count = computed(() => dataSource.value.length); // 当前页数据条数
-
+const editFormRef = ref();
 const isModalVisible = ref(false); // 控制弹窗显示状态
 const editForm = reactive({}); // 编辑表单数据
 const expenseTypeMap = reactive({
@@ -239,6 +239,7 @@ const showEditModal = ({expenseType,setmealAmount,discountAmount,actualPayment,i
 const handleOk = async () => {
   try {
     console.log(editForm)
+    await editFormRef.value.validate();
     await updateBill(editForm); // 更新教练信息
     isModalVisible.value = false;
     await fetchBills({ page: current.value, pageSize: pageSizeInfo.value }); // 重新获取数据
