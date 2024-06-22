@@ -1,7 +1,17 @@
 <template>
   <div>
     <!-- 新增学员按钮-->
-    <a-button type="primary" @click="showModal">新增学员</a-button>
+    <div style="display: flex">
+      <a-button type="primary" @click="showModal">新增学员</a-button>
+      <a-input-search
+          placeholder="请输入学号进行搜索"
+          @search="handleSearch"
+          style="margin-bottom: 16px;margin-left: 20px;width: 200px"
+
+      />
+    </div>
+
+
     <a-modal v-model:open="open" title="新增学员" :confirm-loading="confirmLoading" @ok="handleAddOk" >
       <a-form :model="addForm" :rules="rules" ref="addFormRef">
         <a-form-item label="姓名" name="name">
@@ -16,8 +26,8 @@
         <a-form-item label="地址" name="address">
           <a-input v-model:value="addForm.address" />
         </a-form-item>
-        <a-form-item label="教练名" name="coachName" @blur="checkCoach">
-          <a-input v-model:value="addForm.coachName" />
+        <a-form-item label="教练名" name="coachName">
+          <select-coach @targetCoach="validateCoachName"/>
         </a-form-item>
         <a-form-item label="申请类型" name="applyType">
           <a-select v-model:value="addForm.applyType">
@@ -44,7 +54,6 @@
                 <a>删除</a>
               </a-popconfirm>
             </a-space>
-            <a @click="markGraduated(record.id)">&nbsp;毕业</a>
           </template>
         </template>
       </a-table>
@@ -85,7 +94,7 @@
           </a-select>
         </a-form-item>
         <a-form-item label="教练名" name="coachName">
-          <a-input v-model:value="editForm.coachName" />
+          <select-coach @targetCoach="validateCoachName" :coachName="editForm.coachName"/>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -103,6 +112,7 @@ import {getCoachByName} from "@/api/Coach/getCoachByName.js";
 import {message} from "ant-design-vue";
 import {addGraduation} from "@/api/Graduation/addGraduation.js";
 import {validationRules} from "@/utils/validationRules.js";
+import SelectCoach from "@/views/Layout/components/components/components/selectCoach.vue";
 
 const open = ref(false);
 const confirmLoading = ref(false);
@@ -115,9 +125,10 @@ const pageSizeInfo = ref(10); // 每页条目数
 const coaches = ref([]);
 const dataSource = coaches;
 const count = computed(() => dataSource.value.length); // 当前页数据条数
-
+const searchQuery = ref();
 const isModalVisible = ref(false); // 控制弹窗显示状态
 const editForm = reactive({}); // 编辑表单数据
+
 
 const carTypeMap = reactive({
   1: '小型汽车手动挡证',
@@ -168,14 +179,14 @@ const columns = [
 
 const rules = validationRules;
 
-const markGraduated = async (id) => {
-  const response = await addGraduation(id)
-  if(response.code === 200){
-    message.success("将该学生标记为已毕业！请去毕业管理进行查看");
-  }
-}
+
 const showModal = () => {
   open.value = true;
+};
+
+const handleSearch = (value) => {
+  searchQuery.value = value;
+  fetchStudents({ studentId: searchQuery.value,page: current.value, pageSize: pageSizeInfo.value });
 };
 
 const handleAddOk = async () => {
@@ -188,7 +199,12 @@ const handleAddOk = async () => {
     await fetchStudents({ page: current.value, pageSize: pageSizeInfo.value });
   }, 200);
 };
-
+const validateCoachName = async (coachName) => {
+  console.log(coachName);
+  addForm.coachName= coachName;
+  editForm.coachName= coachName;
+  await addFormRef.value.validate('coachName');
+}
 const onDelete = async (id) => {
   try {
     await deleteStudent(id);
@@ -202,9 +218,9 @@ const handlePageChange = (page) => {
   fetchStudents({ page: current.value, pageSize: pageSizeInfo.value });
 };
 
-const fetchStudents = async ({ page = 1, pageSize = 10 }) => {
+const fetchStudents = async ({ studentId='',page = 1, pageSize = 10 }) => {
   try {
-    const response = await studentPageQuery({ page, pageSize });
+    const response = await studentPageQuery({ studentId,page, pageSize });
     coaches.value = response.data.records;
     totalItems.value = response.data.total;
     current.value = page;

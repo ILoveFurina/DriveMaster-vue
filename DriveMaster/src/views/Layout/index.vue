@@ -21,7 +21,7 @@
       </a-layout>
     </a-layout-content>
     <a-layout-footer style="text-align: center">
-      Created by Yan, zzuli
+      Created by Yan, zzuli, v1.1.0
     </a-layout-footer>
   </a-layout>
 </template>

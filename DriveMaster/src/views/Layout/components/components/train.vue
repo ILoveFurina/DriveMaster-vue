@@ -1,11 +1,20 @@
 <template>
   <div>
-    <!-- 新增学员按钮-->
-    <a-button type="primary" @click="showModal">新增训练</a-button>
+    <div style="display: flex">
+      <a-button type="primary" @click="showModal">新增训练</a-button>
+      <a-input-search
+          placeholder="输入学号进行搜索"
+          @search="handleSearch"
+          style="margin-bottom: 16px;margin-left: 20px;width: 200px"
+
+      />
+    </div>
     <a-modal v-model:open="open" title="新增学员" :confirm-loading="confirmLoading" @ok="handleAddOk">
       <a-form :model="addForm" :rules="rules" ref="addFormRef">
         <a-form-item label="学员编号" name="studentId">
-          <a-input v-model:value="addForm.studentId" />
+          <select-student @fresh="fetchTrains({page: current.value, pageSize: pageSizeInfo.value});"
+          @targetStudent="validateStudentId"
+          />
         </a-form-item>
         <a-form-item label="科目类型" name="subjectType">
           <a-select v-model:value="addForm.subjectType">
@@ -97,6 +106,7 @@ import {trainPageQuery} from "@/api/Train/trainPageQuery.js";
 import {updateTrain} from "@/api/Train/updateTrain.js";
 import {deleteTrain} from "@/api/Train/deleteTrain.js";
 import {validationRules} from "@/utils/validationRules.js";
+import SelectStudent from "@/views/Layout/components/components/components/selectStudent.vue";
 
 //新增教练相关属性
 const addFormRef = ref();
@@ -123,7 +133,7 @@ const subjectTypeMap = reactive({
 const columns = [
   {
     title: '学号',
-    dataIndex: 'studentId',
+    dataIndex: 'studentNumber',
   },
   {
     title: '姓名',
@@ -151,6 +161,12 @@ const columns = [
 
 
 const rules = validationRules
+const searchQuery = ref();
+
+const handleSearch = (value) => {
+  searchQuery.value = value;
+  fetchTrains({ studentNumber:searchQuery.value,studentId: searchQuery.value,page: current.value, pageSize: pageSizeInfo.value });
+};
 
 const handleAddOk = async () => {
   await addFormRef.value.validate();
@@ -176,9 +192,15 @@ const handlePageChange = (page) => {
   fetchTrains({page: current.value, pageSize: pageSizeInfo.value});
 };
 
-const fetchTrains = async ({page = 1, pageSize = 10}) => {
+const validateStudentId = async (selectedStudents) => {
+  addForm.studentId = selectedStudents[0];
+  await addFormRef.value.validate('studentId');
+  console.log(selectedStudents[0]);
+}
+
+const fetchTrains = async ({studentNumber='',page = 1, pageSize = 10}) => {
   try {
-    const response = await trainPageQuery({page, pageSize});
+    const response = await trainPageQuery({studentNumber,page, pageSize});
     coaches.value = response.data.records;
     totalItems.value = response.data.total;
     current.value = page;

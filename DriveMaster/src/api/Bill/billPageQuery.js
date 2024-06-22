@@ -1,6 +1,7 @@
 
 import AxiosInstance from "@/utils/http.js";
 import moment from "moment";
+import {message} from "ant-design-vue";
 
 export async function billPageQuery(billPageQueryDTO) {
     try {
@@ -16,9 +17,8 @@ export async function billPageQuery(billPageQueryDTO) {
 
         if (response.code === 200) {
             return response
-        }
-        if (response.code === 500) {
-            return null
+        }else{
+            message.error(response.msg,3);
         }
     } catch (error) {
         console.log(error)

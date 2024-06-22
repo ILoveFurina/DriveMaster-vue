@@ -1,13 +1,12 @@
 <template>
   <div class="graduation-management">
-    <div style="margin-bottom: 10px">
-      <a-popover title="请移步！">
-        <template #content>
-          <p>请去'学员管理'中对学员点击'毕业'</p>
-          <p>即可添加到此毕业管理中</p>
-        </template>
-        <a-button type="primary">新增毕业学员</a-button>
-      </a-popover>
+    <div style="margin-bottom: 10px;display: flex">
+      <SelectGraduatedStudent @fresh="fetchGraduationData({ page: current.value, pageSize: pageSizeInfo.value })"/>
+      <a-input-search
+          placeholder="请输入学员进行搜索"
+          @search="handleSearch"
+          style="margin-bottom: 16px;margin-left: 20px;width: 200px"
+      />
     </div>
 
     <div class="graduation-list">
@@ -43,7 +42,7 @@
         @cancel="handleCancel"
     >
       <a-form :model="editForm" :rules="rules" ref="editFormRef">
-        <a-form-item label="申请类型" name="licenseType">
+        <a-form-item label="驾照类型" name="licenseType">
           <a-select v-model:value="editForm.licenseType">
             <a-select-option v-for="(label, value) in licenseTypeMap" :key="value" :value="value">
               {{ label }}
@@ -71,6 +70,8 @@ import {graduationPageQuery} from "@/api/Graduation/graduationPageQuery.js";
 import {updateGraduation} from "@/api/Graduation/updateGraduation.js";
 import {deleteGraduation} from "@/api/Graduation/deleteGraduation.js";
 import moment from "moment";
+import SelectStudent from "@/views/Layout/components/components/components/selectStudent.vue";
+import SelectGraduatedStudent from "@/views/Layout/components/components/components/selectGraduatedStudent.vue";
 
 const current = ref(1); // 当前页码
 const totalItems = ref(85); // 总条目数
@@ -81,7 +82,7 @@ const count = computed(() => dataSource.value.length); // 当前页数据条数
 const editFormRef = ref();
 const isModalVisible = ref(false); // 控制弹窗显示状态
 const editForm = reactive({}); // 编辑表单数据
-
+const searchQuery = ref('');
 const licenseTypeMap = reactive({
   1: '小型汽车手动挡证',
   2: '小型汽车自动挡证',
@@ -90,12 +91,16 @@ const licenseTypeMap = reactive({
 });
 
 const columns = [
+    {
+    title: '学号',
+    dataIndex: 'studentNumber',
+  },
   {
     title: '姓名',
     dataIndex: 'studentName',
   },
   {
-    title: '申请类型',
+    title: '驾照类型',
     dataIndex: 'licenseType',
     customRender: ({ text }) => licenseTypeMap[text] || '未知证件',
   },
@@ -126,6 +131,10 @@ const rules = {
   ]
 
 };
+const handleSearch = (value) => {
+  searchQuery.value = value;
+  fetchGraduationData({ studentName:searchQuery.value,page: current.value, pageSize: pageSizeInfo.value });
+};
 
 const onDelete = async (id) => {
   try {
@@ -140,9 +149,9 @@ const handlePageChange = (page) => {
   fetchGraduationData({ page: current.value, pageSize: pageSizeInfo.value });
 };
 
-const fetchGraduationData = async ({ page = 1, pageSize = 10 }) => {
+const fetchGraduationData = async ({ studentName = '',page = 1, pageSize = 10 }) => {
   try {
-    const response = await graduationPageQuery({ page, pageSize });
+    const response = await graduationPageQuery({ studentName , page, pageSize });
     graduationData.value = response.data.records;
     totalItems.value = response.data.total;
     current.value = page;

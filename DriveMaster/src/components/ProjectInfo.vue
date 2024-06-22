@@ -5,7 +5,7 @@
       <!-- 您的内容 -->
 
       <a-card id="mainCard" >
-        <p>本项目采用前后端分离架构 Vue+SpringBoot</p>
+        <p>本项目采用前后端分离架构Vue+SpringBoot , 是当前市场上最主流的实现方案</p>
         <div class="icon-vue">
           <svg xmlns="http://www.w3.org/2000/svg" width="9.28em" height="8em" viewBox="0 0 256 221"><path fill="#41B883" d="M204.8 0H256L128 220.8L0 0h97.92L128 51.2L157.44 0z"/><path fill="#41B883" d="m0 0l128 220.8L256 0h-51.2L128 132.48L50.56 0z"/><path fill="#35495E" d="M50.56 0L128 133.12L204.8 0h-47.36L128 51.2L97.92 0z"/></svg>
         </div>
@@ -16,9 +16,10 @@
         <a-button @click="RouteReturn" type="primary" :icon="h(LeftOutlined)" class="absolute-bottom">返回</a-button>
 
         <div style="margin-top: 60px; ">
-          <p>前端技术栈：Html, JavaScript, CSS, Vue3, Axios, Pinia, Vue-Router, Ant-Design-Vue</p>
-          <p>后端技术栈：Java, SpringMVC, Spring, Mybatis-plus, SpringBoot, Mysql, Maven</p>
-          <p>其他技术:Nginx, git , 阿里云ECS, 阿里云OSS</p>
+          <p>前端技术栈：Html, JavaScript, CSS, Vue3, Axios, Pinia, Vue-Router, Ant-Design-Vue,Nginx</p>
+          <p>后端技术栈：Java, SpringMVC, Spring, Mybatis-plus, SpringBoot, Sa-Token,Mysql, Maven</p>
+          <p>工具使用: IDEA, WebStorm, Nginx, git, Apifox, Navicat...</p>
+
         </div>
       </a-card>
     </div>
@@ -44,6 +45,8 @@ function RouteReturn() {
 <style scoped>
 
 #mainCard{
+  position: absolute;
+  top: 25%;
   width: 600px;
   text-align: center;
   background: rgba(255, 255, 255, 0.66);

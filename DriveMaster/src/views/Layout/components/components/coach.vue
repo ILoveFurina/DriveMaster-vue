@@ -1,6 +1,15 @@
 <template>
   <div>
-    <a-button type="primary" @click="showModal">新增教练</a-button>
+    <div style="display: flex">
+      <a-button type="primary" @click="showModal">新增教练</a-button>
+      <a-input-search
+          placeholder="请输入教练名进行搜索"
+          @search="handleSearch"
+          style="margin-bottom: 16px;margin-left: 20px;width: 200px"
+
+      />
+    </div>
+
     <a-modal v-model:open="open" title="新增教练" :confirm-loading="confirmLoading" @ok="handleAddOk">
       <a-form :model="addForm" :rules="rules" ref="addFormRef">  <!-- ref-->
         <a-form-item label="姓名" name="name">
@@ -89,7 +98,7 @@ const open = ref(false);
 const confirmLoading = ref(false);
 const addForm = reactive({});
 const addFormRef = ref(null); // 教练表单的引用
-
+const searchQuery = ref();
 const current = ref(1); // 当前页码
 const totalItems = ref(85); // 总条目数
 const pageSizeInfo = ref(10); // 每页条目数
@@ -140,6 +149,12 @@ const columns = [
     scopedSlots: { customRender: 'operation' },
   },
 ];
+
+const handleSearch = (value) => {
+  searchQuery.value = value;
+  fetchCoaches({ name:searchQuery.value,studentId: searchQuery.value,page: current.value, pageSize: pageSizeInfo.value });
+};
+
 const rules = validationRules; // 统一存放了校验规则
 
 const showModal = () => {
@@ -173,9 +188,9 @@ const handlePageChange = (page) => {
   fetchCoaches({ page: current.value, pageSize: pageSizeInfo.value });
 };
 
-const fetchCoaches = async ({ page = 1, pageSize = 10 }) => {
+const fetchCoaches = async ({ name='',page = 1, pageSize = 10 }) => {
   try {
-    const response = await coachPageQuery({ page, pageSize });
+    const response = await coachPageQuery({ name,page, pageSize });
     coaches.value = response.data.records;
     totalItems.value = response.data.total;
     current.value = page;

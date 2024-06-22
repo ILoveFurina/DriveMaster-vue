@@ -1,7 +1,7 @@
 <template>
   <a-layout>
     <a-layout-content style="margin-left: 50px">
-      <a-card class="user-info-card" title="用户信息">
+      <a-card class="user-info-card" title="管理员信息">
         <p><strong>昵称:</strong> {{ user }}</p>
         <p><strong>账号:</strong> {{ username }}</p>
         <p><strong>手机号:</strong> {{ phone }}</p>
@@ -23,9 +23,10 @@
           </a-form-item>
         </a-form>
       </a-card>
+      <a-button type="primary" style="width: 200px;margin-top: 10px" danger @click="userLogout"> 退出登录</a-button>
     </a-layout-content>
   </a-layout>
-  <a-button type="primary" style="width: 200px;margin-left: 50px" danger @click="userLogout"> 退出登录</a-button>
+
 </template>
 <script setup>
 import {recallPwd} from "@/api/login/recallPwd.js";

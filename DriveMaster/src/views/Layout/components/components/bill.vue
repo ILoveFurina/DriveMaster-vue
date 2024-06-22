@@ -1,11 +1,24 @@
 <template>
   <div>
     <!-- 新增账单按钮-->
-    <a-button type="primary" @click="showModal">新增账单</a-button>
+    <div style="display: flex">
+      <a-button type="primary" @click="showModal">新增账单</a-button>
+      <a-input-search
+          placeholder="根据账单号进行搜索"
+          @search="handleBillSearch"
+          style="margin-bottom: 16px;margin-left: 20px;width: 200px"
+      />
+      <a-input-search
+          placeholder="根据学号进行搜索"
+          @search="handleStudentSearch"
+          style="margin-bottom: 16px;margin-left: 20px;width: 200px"
+      />
+    </div>
+
     <a-modal v-model:open="open" title="新增账单" :confirm-loading="confirmLoading" @ok="handleAddOk">
       <a-form :model="addForm" :rules="rules" ref="addFormRef">
         <a-form-item label="学员编号" name="studentId">
-          <a-input v-model:value="addForm.studentId" />
+          <select-student @targetStudent="handleStudentId"/>
         </a-form-item>
         <a-form-item label="费用类型" name="expenseType">
           <a-select v-model:value="addForm.expenseType">
@@ -98,6 +111,7 @@ import {isStudentExists} from "@/api/Student/isStudentExists.js";
 import {addBill} from "@/api/Bill/addBill.js";
 import {updateBill} from "@/api/Bill/updateBill.js";
 import {validationRules} from "@/utils/validationRules.js";
+import SelectStudent from "@/views/Layout/components/components/components/selectStudent.vue";
 
 //新增教练相关属性
 const modalText = ref('Content of the modal');
@@ -114,6 +128,9 @@ const count = computed(() => dataSource.value.length); // 当前页数据条数
 const editFormRef = ref();
 const isModalVisible = ref(false); // 控制弹窗显示状态
 const editForm = reactive({}); // 编辑表单数据
+const searchBillQuery = ref();
+const searchStudentQuery = ref();
+
 const expenseTypeMap = reactive({
   1:'学费',
   2:'补考费',
@@ -187,8 +204,29 @@ const columns = [
 
 const rules = validationRules
 
+const handleStudentId = async (selectedStudents) => {
+  addForm.studentId = selectedStudents[0];
+  await addFormRef.value.validate('studentId');
+  console.log(selectedStudents[0]);
+}
+
 const showModal = () => {
   open.value = true;
+};
+const handleBillSearch = (value) => {
+  searchBillQuery.value = value;
+  fetchBills({
+    billNumber:searchBillQuery.value,
+    page: current.value,
+    pageSize: pageSizeInfo.value });
+};
+const handleStudentSearch = (value) => {
+  searchStudentQuery.value = value;
+  fetchBills({
+    studentNumber:searchStudentQuery.value,
+    billNumber:searchBillQuery.value,
+    page: current.value,
+    pageSize: pageSizeInfo.value });
 };
 
 const handleAddOk = async () => {
@@ -219,9 +257,9 @@ const handlePageChange = (page) => {
   fetchBills({ page: current.value, pageSize: pageSizeInfo.value });
 };
 
-const fetchBills = async ({ page = 1, pageSize = 10 }) => {
+const fetchBills = async ({ billNumber='',studentNumber='', page = 1, pageSize = 10 }) => {
   try {
-    const response = await billPageQuery({ page, pageSize });
+    const response = await billPageQuery({billNumber, studentNumber,page, pageSize });
     bills.value = response.data.records;
     totalItems.value = response.data.total;
     current.value = page;
